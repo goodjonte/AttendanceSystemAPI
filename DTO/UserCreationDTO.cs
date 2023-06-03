@@ -10,7 +10,7 @@ namespace AttendanceSystemAPI.DTO
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public UserRole UsersRole { get; set; }
-        public string? ParentName { get; set; } //shouldnt be null if user role is student / 2
-        public string? ParentPhone { get; set; } //shouldnt be null if user role is student / 2
+        public string? ParentName { get; set; } //shouldnt be null if user role is student 2
+        public string? ParentPhone { get; set; } //shouldnt be null if user role is student 2
     }
 }
