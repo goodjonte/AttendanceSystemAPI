@@ -34,20 +34,13 @@ namespace AttendanceSystemAPI.Controllers
 
         // GET: api/SchoolClasses/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<SchoolClass>> GetSchoolClass(Guid id)
+        public IQueryable<SchoolClass> GetSchoolClass(Guid id)
         {
-          if (_context.SchoolClass == null)
-          {
-              return NotFound();
-          }
-            var schoolClass = await _context.SchoolClass.FindAsync(id);
+          
+            IQueryable<SchoolClass> schoolClasses = _context.SchoolClass.Where( c => c.TeacherId == id);
 
-            if (schoolClass == null)
-            {
-                return NotFound();
-            }
 
-            return schoolClass;
+            return schoolClasses;
         }
 
         // PUT: api/SchoolClasses/5
@@ -90,6 +83,7 @@ namespace AttendanceSystemAPI.Controllers
           {
               return Problem("Entity set 'AttendanceSystemAPIContext.SchoolClass'  is null.");
           }
+            schoolClass.Id = Guid.NewGuid();
             _context.SchoolClass.Add(schoolClass);
             await _context.SaveChangesAsync();
 

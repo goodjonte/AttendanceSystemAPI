@@ -90,6 +90,7 @@ namespace AttendanceSystemAPI.Controllers
           {
               return Problem("Entity set 'AttendanceSystemAPIContext.Notice'  is null.");
           }
+            notice.Id = Guid.NewGuid();
             _context.Notice.Add(notice);
             await _context.SaveChangesAsync();
 

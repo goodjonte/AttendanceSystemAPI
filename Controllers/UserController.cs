@@ -3,6 +3,7 @@ using AttendanceSystemAPI.DTO;
 using AttendanceSystemAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using NuGet.Protocol.Plugins;
 using System.IdentityModel.Tokens.Jwt;
@@ -28,22 +29,6 @@ namespace AttendanceSystemAPI.Controllers
         }
 
         //METHODS
-        //api/User/GetUsersName
-        //Gets users name by guid
-        [HttpGet("GetUsersName")]
-        public async Task<ActionResult<string>> GetUsersName(Guid userId)
-        {
-            User? thisUser = await _context.User.FindAsync(userId);
-            if (thisUser == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                return Ok(thisUser.FirstName + " " + thisUser.LastName);
-            }
-        }
-
         //api/User/register POST
         //Register User
         [HttpPost("register")]
@@ -115,8 +100,8 @@ namespace AttendanceSystemAPI.Controllers
         {
             UserRole userRole;
             string userRoleString;
-            userRole = _context.User.FirstOrDefault(x => x.Email == tokenRequest.Email).UsersRole;
-            switch (userRole)
+            User user = _context.User.FirstOrDefault(x => x.Email == tokenRequest.Email);
+            switch (user.UsersRole)
             {
                 case UserRole.Admin:
                     userRoleString = "0";
@@ -135,7 +120,7 @@ namespace AttendanceSystemAPI.Controllers
 
             List<Claim> claims = new List<Claim>//Creates claims to assign to the jwt token 
             {
-                new Claim("Email", tokenRequest.Email),
+                new Claim("user", user.Id.ToString()),
                 new Claim("Role", userRoleString)
             };
 
