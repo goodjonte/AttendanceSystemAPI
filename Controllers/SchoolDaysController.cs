@@ -90,7 +90,6 @@ namespace AttendanceSystemAPI.Controllers
           {
               return Problem("Entity set 'AttendanceSystemAPIContext.SchoolDay'  is null.");
           }
-            schoolDay.Id = Guid.NewGuid();
             _context.SchoolDay.Add(schoolDay);
             await _context.SaveChangesAsync();
 
