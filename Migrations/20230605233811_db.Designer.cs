@@ -4,6 +4,7 @@ using AttendanceSystemAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AttendanceSystemAPI.Migrations
 {
     [DbContext(typeof(AttendanceSystemAPIContext))]
-    partial class AttendanceSystemAPIContextModelSnapshot : ModelSnapshot
+    [Migration("20230605233811_db")]
+    partial class db
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -65,6 +68,24 @@ namespace AttendanceSystemAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Notice");
+                });
+
+            modelBuilder.Entity("AttendanceSystemAPI.Models.School", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("SchoolName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("SchoolWeek")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("School");
                 });
 
             modelBuilder.Entity("AttendanceSystemAPI.Models.SchoolClass", b =>
@@ -171,6 +192,9 @@ namespace AttendanceSystemAPI.Migrations
 
                     b.Property<byte[]>("PasswordSalt")
                         .HasColumnType("varbinary(max)");
+
+                    b.Property<Guid>("SchoolId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("UsersRole")
                         .HasColumnType("int");

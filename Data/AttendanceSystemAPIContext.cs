@@ -15,9 +15,6 @@ namespace AttendanceSystemAPI.Data
         }
 
         public DbSet<AttendanceSystemAPI.Models.User> User { get; set; } = default!;
-
-        public DbSet<AttendanceSystemAPI.Models.School> School { get; set; } = default!;
-
         public DbSet<AttendanceSystemAPI.Models.Notice> Notice { get; set; } = default!;
 
         public DbSet<AttendanceSystemAPI.Models.SchoolWeek> SchoolWeek { get; set; } = default!;

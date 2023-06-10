@@ -29,6 +29,19 @@ namespace AttendanceSystemAPI.Controllers
         }
 
         //METHODS
+        //api/User/{id}
+        [HttpGet("{id}")]
+        public async Task<ActionResult<String>> GetNameById(Guid id)
+        {
+            User thisUser = _context.User.First(x => x.Id == id);
+            if(thisUser == null)
+            {
+                return "User Not Found";
+            }
+            return thisUser.FirstName + " " + thisUser.LastName;
+
+        }
+
         //api/User/register POST
         //Register User
         [HttpPost("register")]
@@ -56,13 +69,12 @@ namespace AttendanceSystemAPI.Controllers
                 user.Id = Guid.NewGuid();
                 user.CanLogin = false;
                 user.ParentName = request.ParentName;
-
+                user.ParentPhone = request.ParentPhone;
             }
 
             //set universal user properties
             user.FirstName = request.FirstName;
             user.LastName = request.LastName;
-            user.SchoolId = request.SchoolId;
             user.UsersRole = request.UsersRole;
             _context.User.Add(user);//Adds the user to the db context
             await _context.SaveChangesAsync();//Saves the changes to the db

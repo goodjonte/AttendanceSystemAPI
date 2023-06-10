@@ -90,6 +90,7 @@ namespace AttendanceSystemAPI.Controllers
           {
               return Problem("Entity set 'AttendanceSystemAPIContext.SchoolWeek'  is null.");
           }
+            schoolWeek.Id = Guid.NewGuid();
             _context.SchoolWeek.Add(schoolWeek);
             await _context.SaveChangesAsync();
 

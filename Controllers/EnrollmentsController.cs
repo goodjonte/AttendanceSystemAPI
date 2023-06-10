@@ -34,17 +34,15 @@ namespace AttendanceSystemAPI.Controllers
 
         // GET: api/Enrollments/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Enrollments>> GetEnrollments(Guid id)
+        public IQueryable<Enrollments> GetEnrollments(Guid id)
         {
-          if (_context.Enrollments == null)
-          {
-              return NotFound();
-          }
-            var enrollments = await _context.Enrollments.FindAsync(id);
 
-            if (enrollments == null)
+            IQueryable<Enrollments> enrollments = _context.Enrollments.Where(c => c.ClassId == id);
+
+            foreach(Enrollments enrollment in enrollments)
             {
-                return NotFound();
+                User tempUser = _context.User.First(x => x.Id == enrollment.StudentId);
+                enrollment.StudentName = tempUser.FirstName + " " + tempUser.LastName;
             }
 
             return enrollments;

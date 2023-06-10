@@ -9,5 +9,6 @@ namespace AttendanceSystemAPI.Models
         public Guid EnrollmentId {  get; set; }
         public Guid? StudentId { get; set; }
         public Guid? ClassId { get; set; }
+        public string? StudentName { get; set; }
     }
 }
