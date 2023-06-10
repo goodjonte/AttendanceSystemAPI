@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using AttendanceSystemAPI.DTO;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AttendanceSystemAPI.Models
 {
@@ -6,8 +7,7 @@ namespace AttendanceSystemAPI.Models
     {
         public Guid Id { get; set; }
         public DayOfWeek day { get; set; }
-        [NotMapped]
-        public List<Guid> DaysPeriods { get; set; }
+        public string DaysPeriodsJsonArrayString { get; set; }
 
     }
 
