@@ -68,7 +68,7 @@ namespace AttendanceSystemAPI.Controllers
             {
                 PeriodDTO classDTO = new PeriodDTO();
                 classDTO.PeriodId = id;
-                classDTO.PeriodName = _context.SchoolPeriod.Find(id).Name
+                classDTO.PeriodName = _context.SchoolPeriod.Find(id).Name;
                 timeTable.MondayColumn.Add(classDTO);
             });
 
@@ -78,7 +78,7 @@ namespace AttendanceSystemAPI.Controllers
             {
                 PeriodDTO classDTO = new PeriodDTO();
                 classDTO.PeriodId = id;
-                classDTO.PeriodName = _context.SchoolPeriod.Find(id).Name
+                classDTO.PeriodName = _context.SchoolPeriod.Find(id).Name;
                 timeTable.TuesdayColumn.Add(classDTO);
             });
 
@@ -88,7 +88,7 @@ namespace AttendanceSystemAPI.Controllers
             {
                 PeriodDTO classDTO = new PeriodDTO();
                 classDTO.PeriodId = id;
-                classDTO.PeriodName = _context.SchoolPeriod.Find(id).Name
+                classDTO.PeriodName = _context.SchoolPeriod.Find(id).Name;
                 timeTable.WednesdayColumn.Add(classDTO);
             });
 
@@ -98,7 +98,7 @@ namespace AttendanceSystemAPI.Controllers
             {
                 PeriodDTO classDTO = new PeriodDTO();
                 classDTO.PeriodId = id;
-                classDTO.PeriodName = _context.SchoolPeriod.Find(id).Name
+                classDTO.PeriodName = _context.SchoolPeriod.Find(id).Name;
                 timeTable.ThursdayColumn.Add(classDTO);
             });
 
@@ -108,7 +108,7 @@ namespace AttendanceSystemAPI.Controllers
             {
                 PeriodDTO classDTO = new PeriodDTO();
                 classDTO.PeriodId = id;
-                classDTO.PeriodName = _context.SchoolPeriod.Find(id).Name
+                classDTO.PeriodName = _context.SchoolPeriod.Find(id).Name;
                 timeTable.FridayColumn.Add(classDTO);
             });
 
