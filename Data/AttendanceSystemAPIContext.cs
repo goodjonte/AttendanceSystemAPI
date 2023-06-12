@@ -28,5 +28,7 @@ namespace AttendanceSystemAPI.Data
         public DbSet<AttendanceSystemAPI.Models.SchoolClass> SchoolClass { get; set; } = default!;
 
         public DbSet<AttendanceSystemAPI.Models.ClassesPeriods> ClassesPeriods { get; set; } = default!;
+
+        public DbSet<AttendanceSystemAPI.Models.School> School { get; set; } = default!;
     }
 }

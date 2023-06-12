@@ -29,7 +29,12 @@ namespace AttendanceSystemAPI.Controllers
           {
               return NotFound();
           }
-            return await _context.SchoolWeek.ToListAsync();
+          List<SchoolWeek> schoolWeeks = await _context.SchoolWeek.ToListAsync();
+          if (schoolWeeks.Count < 1)
+          {
+                return NotFound();
+          }
+            return schoolWeeks;
         }
 
         // GET: api/SchoolWeeks/5
