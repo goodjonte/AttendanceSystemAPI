@@ -7,6 +7,7 @@ namespace AttendanceSystemAPI.Models
     {
         public Guid Id { get; set; }
         public DayOfWeek day { get; set; }
+        public int NumberOfPeriods { get; set; }
         public string DaysPeriodsJsonArrayString { get; set; }
 
     }

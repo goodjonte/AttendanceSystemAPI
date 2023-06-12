@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AttendanceSystemAPI.Data;
 using AttendanceSystemAPI.Models;
+using AttendanceSystemAPI.DTO;
+using Newtonsoft.Json;
 
 namespace AttendanceSystemAPI.Controllers
 {
@@ -35,6 +37,83 @@ namespace AttendanceSystemAPI.Controllers
                 return NotFound();
           }
             return schoolWeeks;
+        }
+
+        // GET: api/SchoolWeeks/TimetableInfo
+        [HttpGet("TimetableInfo")]
+        public async Task<ActionResult<TimeTableDTO>> TimetableInfo()
+        {
+            TimeTableDTO timeTable = new TimeTableDTO();
+            List<SchoolWeek> schoolWeeks = await _context.SchoolWeek.ToListAsync();
+            List<SchoolDay> schoolDays = await _context.SchoolDay.ToListAsync();
+            int mostPeriods = 0;
+            for(int i =0; i< schoolDays.Count; i++)
+            {
+                int thisPeriods = schoolDays[i].NumberOfPeriods;
+                if(thisPeriods > mostPeriods)
+                {
+                    mostPeriods = thisPeriods;
+                }
+
+            }
+           
+
+            timeTable.MostPeriods = mostPeriods;
+
+            timeTable.SameEveryDay = schoolWeeks[0].SameEveryDay;
+
+            timeTable.MondayId = schoolDays.First(d => d.day == Models.DayOfWeek.Monday).Id;
+            List<Guid> MondayGuids = JsonConvert.DeserializeObject<List<Guid>>( schoolDays.First(d => d.day == Models.DayOfWeek.Monday).DaysPeriodsJsonArrayString);
+            MondayGuids.ForEach(id =>
+            {
+                PeriodDTO classDTO = new PeriodDTO();
+                classDTO.PeriodId = id;
+                classDTO.PeriodName = _context.SchoolPeriod.Find(id).Name
+                timeTable.MondayColumn.Add(classDTO);
+            });
+
+            timeTable.TuesdayId = schoolDays.First(d => d.day == Models.DayOfWeek.Tuesday).Id;
+            List<Guid> TuesdayGuids = JsonConvert.DeserializeObject<List<Guid>>(schoolDays.First(d => d.day == Models.DayOfWeek.Tuesday).DaysPeriodsJsonArrayString);
+            TuesdayGuids.ForEach(id =>
+            {
+                PeriodDTO classDTO = new PeriodDTO();
+                classDTO.PeriodId = id;
+                classDTO.PeriodName = _context.SchoolPeriod.Find(id).Name
+                timeTable.TuesdayColumn.Add(classDTO);
+            });
+
+            timeTable.WednesdayId = schoolDays.First(d => d.day == Models.DayOfWeek.Wednesday).Id;
+            List<Guid> WednesdayGuids = JsonConvert.DeserializeObject<List<Guid>>(schoolDays.First(d => d.day == Models.DayOfWeek.Wednesday).DaysPeriodsJsonArrayString);
+            WednesdayGuids.ForEach(id =>
+            {
+                PeriodDTO classDTO = new PeriodDTO();
+                classDTO.PeriodId = id;
+                classDTO.PeriodName = _context.SchoolPeriod.Find(id).Name
+                timeTable.WednesdayColumn.Add(classDTO);
+            });
+
+            timeTable.ThursdayId = schoolDays.First(d => d.day == Models.DayOfWeek.Thursday).Id;
+            List<Guid> ThursdayGuids = JsonConvert.DeserializeObject<List<Guid>>(schoolDays.First(d => d.day == Models.DayOfWeek.Thursday).DaysPeriodsJsonArrayString);
+            ThursdayGuids.ForEach(id =>
+            {
+                PeriodDTO classDTO = new PeriodDTO();
+                classDTO.PeriodId = id;
+                classDTO.PeriodName = _context.SchoolPeriod.Find(id).Name
+                timeTable.ThursdayColumn.Add(classDTO);
+            });
+
+            timeTable.FridayId = schoolDays.First(d => d.day == Models.DayOfWeek.Friday).Id;
+            List<Guid> FridayGuids = JsonConvert.DeserializeObject<List<Guid>>(schoolDays.First(d => d.day == Models.DayOfWeek.Friday).DaysPeriodsJsonArrayString);
+            FridayGuids.ForEach(id =>
+            {
+                PeriodDTO classDTO = new PeriodDTO();
+                classDTO.PeriodId = id;
+                classDTO.PeriodName = _context.SchoolPeriod.Find(id).Name
+                timeTable.FridayColumn.Add(classDTO);
+            });
+
+
+            return timeTable;
         }
 
         // GET: api/SchoolWeeks/5

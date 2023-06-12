@@ -42,6 +42,15 @@ namespace AttendanceSystemAPI.Controllers
 
         }
 
+        //api/User/GetTeachers
+        [HttpGet("GetTeachers")]
+        public async Task<List<User>> GetTeachers()
+        {
+
+            return await _context.User.Where(u => u.UsersRole == UserRole.Teacher).ToListAsync();
+
+        }
+
         //api/User/register POST
         //Register User
         [HttpPost("register")]
