@@ -30,6 +30,16 @@ namespace AttendanceSystemAPI.Controllers
 
         //METHODS
         //api/User/{id}
+        [HttpGet("GetUser")]
+        public async Task<User> GetUserById(Guid id)
+        {
+            User thisUser = _context.User.First(x => x.Id == id);
+            
+            return thisUser;
+
+        }
+
+        //api/User/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<String>> GetNameById(Guid id)
         {
@@ -48,6 +58,14 @@ namespace AttendanceSystemAPI.Controllers
         {
 
             return await _context.User.Where(u => u.UsersRole == UserRole.Teacher).ToListAsync();
+
+        }
+        //api/User/GetStudents
+        [HttpGet("GetStudents")]
+        public async Task<List<User>> GetStudents()
+        {
+
+            return await _context.User.Where(u => u.UsersRole == UserRole.Student).ToListAsync();
 
         }
 

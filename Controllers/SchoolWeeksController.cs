@@ -66,50 +66,54 @@ namespace AttendanceSystemAPI.Controllers
             List<Guid> MondayGuids = JsonConvert.DeserializeObject<List<Guid>>( schoolDays.First(d => d.day == Models.DayOfWeek.Monday).DaysPeriodsJsonArrayString);
             MondayGuids.ForEach(id =>
             {
-                PeriodDTO classDTO = new PeriodDTO();
-                classDTO.PeriodId = id;
-                classDTO.PeriodName = _context.SchoolPeriod.Find(id).Name;
-                timeTable.MondayColumn.Add(classDTO);
+                timeTable.MondayColumn.Add(new PeriodDTO {
+                    PeriodId = id, 
+                    PeriodName = _context.SchoolPeriod.Find(id).Name
+                });
             });
 
             timeTable.TuesdayId = schoolDays.First(d => d.day == Models.DayOfWeek.Tuesday).Id;
             List<Guid> TuesdayGuids = JsonConvert.DeserializeObject<List<Guid>>(schoolDays.First(d => d.day == Models.DayOfWeek.Tuesday).DaysPeriodsJsonArrayString);
             TuesdayGuids.ForEach(id =>
             {
-                PeriodDTO classDTO = new PeriodDTO();
-                classDTO.PeriodId = id;
-                classDTO.PeriodName = _context.SchoolPeriod.Find(id).Name;
-                timeTable.TuesdayColumn.Add(classDTO);
+                timeTable.TuesdayColumn.Add(new PeriodDTO
+                {
+                    PeriodId = id,
+                    PeriodName = _context.SchoolPeriod.Find(id).Name
+                });
             });
 
             timeTable.WednesdayId = schoolDays.First(d => d.day == Models.DayOfWeek.Wednesday).Id;
             List<Guid> WednesdayGuids = JsonConvert.DeserializeObject<List<Guid>>(schoolDays.First(d => d.day == Models.DayOfWeek.Wednesday).DaysPeriodsJsonArrayString);
             WednesdayGuids.ForEach(id =>
             {
-                PeriodDTO classDTO = new PeriodDTO();
-                classDTO.PeriodId = id;
-                classDTO.PeriodName = _context.SchoolPeriod.Find(id).Name;
-                timeTable.WednesdayColumn.Add(classDTO);
+                timeTable.WednesdayColumn.Add(new PeriodDTO
+                {
+                    PeriodId = id,
+                    PeriodName = _context.SchoolPeriod.Find(id).Name
+                });
             });
 
             timeTable.ThursdayId = schoolDays.First(d => d.day == Models.DayOfWeek.Thursday).Id;
             List<Guid> ThursdayGuids = JsonConvert.DeserializeObject<List<Guid>>(schoolDays.First(d => d.day == Models.DayOfWeek.Thursday).DaysPeriodsJsonArrayString);
             ThursdayGuids.ForEach(id =>
             {
-                PeriodDTO classDTO = new PeriodDTO();
-                classDTO.PeriodId = id;
-                classDTO.PeriodName = _context.SchoolPeriod.Find(id).Name;
-                timeTable.ThursdayColumn.Add(classDTO);
+                timeTable.ThursdayColumn.Add(new PeriodDTO
+                {
+                    PeriodId = id,
+                    PeriodName = _context.SchoolPeriod.Find(id).Name
+                });
             });
 
             timeTable.FridayId = schoolDays.First(d => d.day == Models.DayOfWeek.Friday).Id;
             List<Guid> FridayGuids = JsonConvert.DeserializeObject<List<Guid>>(schoolDays.First(d => d.day == Models.DayOfWeek.Friday).DaysPeriodsJsonArrayString);
             FridayGuids.ForEach(id =>
             {
-                PeriodDTO classDTO = new PeriodDTO();
-                classDTO.PeriodId = id;
-                classDTO.PeriodName = _context.SchoolPeriod.Find(id).Name;
-                timeTable.FridayColumn.Add(classDTO);
+                timeTable.FridayColumn.Add(new PeriodDTO
+                {
+                    PeriodId = id,
+                    PeriodName = _context.SchoolPeriod.Find(id).Name
+                });
             });
 
 
