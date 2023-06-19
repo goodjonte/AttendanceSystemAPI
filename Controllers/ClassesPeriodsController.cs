@@ -34,18 +34,12 @@ namespace AttendanceSystemAPI.Controllers
 
         // GET: api/ClassesPeriods/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ClassesPeriods>> GetClassesPeriods(Guid id)
+        public IQueryable<ClassesPeriods> GetClassesPeriods(Guid id)
         {
-          if (_context.ClassesPeriods == null)
-          {
-              return NotFound();
-          }
-            var classesPeriods = await _context.ClassesPeriods.FindAsync(id);
+          
+            var classesPeriods = _context.ClassesPeriods.Where(c => c.ClassId == id);
 
-            if (classesPeriods == null)
-            {
-                return NotFound();
-            }
+            
 
             return classesPeriods;
         }

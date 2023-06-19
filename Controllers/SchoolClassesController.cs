@@ -33,12 +33,18 @@ namespace AttendanceSystemAPI.Controllers
         }
 
         // GET: api/SchoolClasses/5
-        [HttpGet("{id}")]
-        public IQueryable<SchoolClass> GetSchoolClass(Guid id)
+        [HttpGet("{id}/{teachersClasses}")]
+        public  IQueryable<SchoolClass> GetSchoolClass(Guid id, bool teachersClasses)
         {
-          
-            IQueryable<SchoolClass> schoolClasses = _context.SchoolClass.Where( c => c.TeacherId == id);
-
+            IQueryable<SchoolClass> schoolClasses;
+            if (teachersClasses)
+            {
+                schoolClasses = _context.SchoolClass.Where(c => c.TeacherId == id);
+            }
+            else
+            {
+                schoolClasses = _context.SchoolClass.Where(c => c.Id == id);
+            }
 
             return schoolClasses;
         }
