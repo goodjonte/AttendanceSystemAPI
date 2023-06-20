@@ -89,7 +89,7 @@ namespace AttendanceSystemAPI.Controllers
           {
               return Problem("Entity set 'AttendanceSystemAPIContext.SchoolClass'  is null.");
           }
-            schoolClass.Id = Guid.NewGuid();
+            
             _context.SchoolClass.Add(schoolClass);
             await _context.SaveChangesAsync();
 

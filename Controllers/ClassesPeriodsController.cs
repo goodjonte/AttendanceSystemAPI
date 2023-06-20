@@ -33,11 +33,11 @@ namespace AttendanceSystemAPI.Controllers
         }
 
         // GET: api/ClassesPeriods/5
-        [HttpGet("{id}")]
-        public IQueryable<ClassesPeriods> GetClassesPeriods(Guid id)
+        [HttpGet("{classId}")]
+        public IQueryable<ClassesPeriods> GetClassesPeriods(Guid classId)
         {
           
-            var classesPeriods = _context.ClassesPeriods.Where(c => c.ClassId == id);
+            var classesPeriods = _context.ClassesPeriods.Where(c => c.ClassId == classId);
 
             
 
