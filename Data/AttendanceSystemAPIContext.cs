@@ -32,5 +32,7 @@ namespace AttendanceSystemAPI.Data
         public DbSet<AttendanceSystemAPI.Models.School> School { get; set; } = default!;
 
         public DbSet<AttendanceSystemAPI.Models.Attendance> Attendance { get; set; } = default!;
+
+        public DbSet<AttendanceSystemAPI.Models.Absence> Absence { get; set; } = default!;
     }
 }
