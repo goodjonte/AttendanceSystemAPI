@@ -10,6 +10,7 @@
         public bool IsLate { get; set; }
         public DateTime Date { get; set; }
         public AttendanceStatus Status { get; set; }
+        public bool UnjustifiedResolved { get; set; }
     }
 
     public enum AttendanceStatus
