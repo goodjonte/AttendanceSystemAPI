@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AttendanceSystemAPI.Data;
 using AttendanceSystemAPI.Models;
+using AttendanceSystemAPI.DTO;
 
 namespace AttendanceSystemAPI.Controllers
 {
@@ -30,6 +31,31 @@ namespace AttendanceSystemAPI.Controllers
               return NotFound();
           }
             return await _context.Attendance.ToListAsync();
+        }
+
+        // GET: api/Attendances
+        [HttpGet("GetUnjustifiedAbsences")]
+        public async Task<ActionResult<IEnumerable<AbsenceDTO>>> GetUnjustifiedAbsences()
+        {
+            if (_context.Attendance == null)
+            {
+                return NotFound();
+            }
+            List<AbsenceDTO> absences = new List<AbsenceDTO>();
+            List<Attendance> attendance = await _context.Attendance.Where(att => att.UnjustifiedResolved == false).ToListAsync();
+            for(int i = 0; i < attendance.Count(); i++)
+            {
+                AbsenceDTO thisAb = new AbsenceDTO();
+                
+                thisAb.AttendanceId = attendance[i].Id;
+                thisAb.ClassName = _context.SchoolClass.Where(c => c.Id == attendance[i].ClassId).FirstOrDefault().ClassName;
+                User thisUser = _context.User.Find(attendance[i].StudentId);
+                thisAb.StudentName = thisUser.FirstName + " " + thisUser.LastName;
+                thisAb.Status = attendance[i].Status;
+                absences.Add(thisAb);
+            }
+
+            return absences;
         }
 
         // GET: api/Attendances/5
