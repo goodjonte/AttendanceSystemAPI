@@ -48,6 +48,7 @@ namespace AttendanceSystemAPI.Controllers
                 AbsenceDTO thisAb = new AbsenceDTO();
                 
                 thisAb.AttendanceId = attendance[i].Id;
+                thisAb.StudentId = attendance[i].StudentId;
                 thisAb.ClassName = _context.SchoolClass.Where(c => c.Id == attendance[i].ClassId).FirstOrDefault().ClassName;
                 User thisUser = _context.User.Find(attendance[i].StudentId);
                 thisAb.StudentName = thisUser.FirstName + " " + thisUser.LastName;
