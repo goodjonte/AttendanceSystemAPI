@@ -160,6 +160,7 @@ namespace AttendanceSystemAPI.Controllers
             List<Claim> claims = new List<Claim>//Creates claims to assign to the jwt token 
             {
                 new Claim("user", user.Id.ToString()),
+                new Claim("name", user.FirstName + " " + user.LastName),
                 new Claim("Role", userRoleString)
             };
 
