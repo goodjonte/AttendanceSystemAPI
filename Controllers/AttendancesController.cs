@@ -59,6 +59,32 @@ namespace AttendanceSystemAPI.Controllers
             return absences;
         }
 
+        // POST: api/Attendances/ResolveAbsence
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost("ResolveAbsence")]
+        public async Task<ActionResult<Attendance>> PostAttendance(AbsenceDTO abs)
+        {
+            if (_context.Attendance == null)
+            {
+                return Problem("Entity set 'AttendanceSystemAPIContext.Attendance'  is null.");
+            }
+            Attendance? attendance = await _context.Attendance.FindAsync(abs.AttendanceId);
+            if(attendance == null)
+            {
+                return NotFound();
+            }
+            if(attendance.UnjustifiedResolved == false)
+            {
+                attendance.UnjustifiedResolved = true;
+            }
+            attendance.Status = abs.Status;
+            _context.Entry(attendance).State = EntityState.Modified;
+            
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
         // GET: api/Attendances/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Attendance>> GetAttendance(Guid id)
