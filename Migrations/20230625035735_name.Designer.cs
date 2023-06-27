@@ -4,6 +4,7 @@ using AttendanceSystemAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AttendanceSystemAPI.Migrations
 {
     [DbContext(typeof(AttendanceSystemAPIContext))]
-    partial class AttendanceSystemAPIContextModelSnapshot : ModelSnapshot
+    [Migration("20230625035735_name")]
+    partial class name
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -145,13 +148,11 @@ namespace AttendanceSystemAPI.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ClassName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("TeacherId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("TeachersName")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

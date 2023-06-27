@@ -49,6 +49,33 @@ namespace AttendanceSystemAPI.Controllers
             return schoolClasses;
         }
 
+        // GET: api/SchoolClasses/5
+        [HttpGet("GetClassInfo/{id}")]
+        public IActionResult GetClassInfo(Guid id)
+        {
+            if(_context == null)
+            {
+                return BadRequest();
+            }
+            
+            SchoolClass? schoolClass = _context.SchoolClass.Find(id);
+            
+            if (schoolClass == null)
+            {
+                return NotFound();
+            }
+            User? teacher = _context.User.Find(schoolClass.TeacherId);
+            if (teacher == null)
+            {
+                return NotFound();
+            }
+            schoolClass.TeachersName = teacher.FirstName + " " + teacher.LastName;
+
+
+
+            return Ok(schoolClass);
+        }
+
         // PUT: api/SchoolClasses/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
