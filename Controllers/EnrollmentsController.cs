@@ -95,14 +95,14 @@ namespace AttendanceSystemAPI.Controllers
         }
 
         // DELETE: api/Enrollments/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEnrollments(Guid id)
+        [HttpDelete("{studentid}/{classId}")]
+        public async Task<IActionResult> DeleteEnrollments(Guid studentid, Guid classId)
         {
             if (_context.Enrollments == null)
             {
                 return NotFound();
             }
-            var enrollments = await _context.Enrollments.FindAsync(id);
+            var enrollments = await _context.Enrollments.FirstAsync(en => en.StudentId == studentid && en.ClassId == classId);
             if (enrollments == null)
             {
                 return NotFound();
