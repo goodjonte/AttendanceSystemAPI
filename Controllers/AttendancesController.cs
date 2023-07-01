@@ -85,20 +85,11 @@ namespace AttendanceSystemAPI.Controllers
             return Ok();
         }
 
-        // GET: api/Attendances/5
+        // GET: api/Attendances/5 - by student id
         [HttpGet("{id}")]
-        public async Task<ActionResult<Attendance>> GetAttendance(Guid id)
+        public IQueryable<Attendance> GetAttendance(Guid id)
         {
-          if (_context.Attendance == null)
-          {
-              return NotFound();
-          }
-            var attendance = await _context.Attendance.FindAsync(id);
-
-            if (attendance == null)
-            {
-                return NotFound();
-            }
+            var attendance = _context.Attendance.Where((att) => att.StudentId == id);
 
             return attendance;
         }
