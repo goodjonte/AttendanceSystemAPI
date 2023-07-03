@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using AttendanceSystemAPI.Data;
 using AttendanceSystemAPI.Models;
 using AttendanceSystemAPI.DTO;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AttendanceSystemAPI.Controllers
 {
@@ -87,11 +88,60 @@ namespace AttendanceSystemAPI.Controllers
 
         // GET: api/Attendances/5 - by student id
         [HttpGet("{id}")]
-        public IQueryable<Attendance> GetAttendance(Guid id)
+        public List<AttendanceDTO> GetAttendance(Guid id)
         {
+            if (_context.Attendance == null)
+            {
+                return null;
+            }
+            List<AttendanceDTO> attList = new List<AttendanceDTO>();
+
             var attendance = _context.Attendance.Where((att) => att.StudentId == id);
 
-            return attendance;
+            foreach(Attendance thisAtt in attendance)
+            {
+                AttendanceDTO att = new AttendanceDTO();
+                att.Id = thisAtt.Id;
+                att.ClassId = thisAtt.ClassId;
+                att.Date = thisAtt.Date;
+                att.IsLate = thisAtt.IsLate;
+                att.IsPresent = thisAtt.IsPresent;
+                ClassesPeriods cp = _context.ClassesPeriods.Find(thisAtt.ClassesPeriodId);
+                SchoolPeriod sp = _context.SchoolPeriod.Find(cp.PeriodId);
+                att.ClassesPeriod = sp.Name;
+                attList.Add(att);
+            }
+
+            List<AttendanceDTO> attListSorted = new List<AttendanceDTO>();
+
+            foreach(AttendanceDTO attToBeSorted in attList)
+            {
+                DateTime thisDate = attToBeSorted.Date;
+                if (attListSorted.Count() == 0)
+                {
+                    attListSorted.Add(attToBeSorted);
+                }
+                else
+                {
+                    bool added = false;
+                    for (int i = 0; i < attListSorted.Count(); i++)
+                    {
+                        if (thisDate < attListSorted[i].Date)
+                        {
+                            attListSorted.Insert(i, attToBeSorted);
+                            added = true;
+                            break;
+                        }
+                    }
+                    if (!added)
+                    {
+                        attListSorted.Add(attToBeSorted);
+                    }
+                }
+            }
+
+
+            return attListSorted;
         }
 
         // PUT: api/Attendances/5

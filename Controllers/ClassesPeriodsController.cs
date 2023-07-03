@@ -43,6 +43,17 @@ namespace AttendanceSystemAPI.Controllers
 
             return classesPeriods;
         }
+        // GET: api/ClassesPeriods/5
+        [HttpGet("ById/{id}")]
+        public async Task<ActionResult<ClassesPeriods>> GetClassesPeriodsById(Guid id)
+        {
+
+            var classesPeriods = await _context.ClassesPeriods.FindAsync(id);
+
+
+
+            return Ok(classesPeriods);
+        }
 
         // PUT: api/ClassesPeriods/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
