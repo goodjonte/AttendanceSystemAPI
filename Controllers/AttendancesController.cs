@@ -181,10 +181,20 @@ namespace AttendanceSystemAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Attendance>> PostAttendance(Attendance attendance)
         {
-          if (_context.Attendance == null)
-          {
-              return Problem("Entity set 'AttendanceSystemAPIContext.Attendance'  is null.");
-          }
+            if (_context.Attendance == null)
+            {
+                return Problem("Entity set 'AttendanceSystemAPIContext.Attendance'  is null.");
+            }
+            var todayResolve = _context.TodaysResolved.FirstOrDefault((tr) => tr.StudentId == attendance.StudentId);
+
+            if (todayResolve != null)
+            { 
+                if (todayResolve.DateValid.Date == DateTime.Today.Date && todayResolve.DateValid.Month == DateTime.Today.Month && todayResolve.DateValid.Year == DateTime.Today.Year)
+                {
+                    attendance.Status = todayResolve.Status;
+                    attendance.UnjustifiedResolved = true;
+                }
+            }
             _context.Attendance.Add(attendance);
             await _context.SaveChangesAsync();
 

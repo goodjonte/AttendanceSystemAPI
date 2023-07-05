@@ -4,6 +4,7 @@ using AttendanceSystemAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AttendanceSystemAPI.Migrations
 {
     [DbContext(typeof(AttendanceSystemAPIContext))]
-    partial class AttendanceSystemAPIContextModelSnapshot : ModelSnapshot
+    [Migration("20230705032518_tr")]
+    partial class tr
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -222,26 +225,6 @@ namespace AttendanceSystemAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("SchoolWeek");
-                });
-
-            modelBuilder.Entity("AttendanceSystemAPI.Models.TodaysResolved", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("DateValid")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("StudentId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TodaysResolved");
                 });
 
             modelBuilder.Entity("AttendanceSystemAPI.Models.User", b =>
