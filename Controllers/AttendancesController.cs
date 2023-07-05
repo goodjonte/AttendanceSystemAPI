@@ -106,6 +106,7 @@ namespace AttendanceSystemAPI.Controllers
                 att.Date = thisAtt.Date;
                 att.IsLate = thisAtt.IsLate;
                 att.IsPresent = thisAtt.IsPresent;
+                att.Status = thisAtt.Status;
                 ClassesPeriods cp = _context.ClassesPeriods.Find(thisAtt.ClassesPeriodId);
                 SchoolPeriod sp = _context.SchoolPeriod.Find(cp.PeriodId);
                 att.ClassesPeriod = sp.Name;

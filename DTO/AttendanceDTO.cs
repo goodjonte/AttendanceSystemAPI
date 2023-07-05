@@ -10,5 +10,6 @@ namespace AttendanceSystemAPI.DTO
         public bool IsPresent { get; set; }
         public bool IsLate { get; set; }
         public DateTime Date { get; set; }
+        public AttendanceStatus Status { get; set; }
     }
 }
