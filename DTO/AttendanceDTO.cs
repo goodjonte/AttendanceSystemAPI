@@ -6,7 +6,7 @@ namespace AttendanceSystemAPI.DTO
     {
         public Guid Id { get; set; }
         public Guid ClassId { get; set; }
-        public string ClassesPeriod { get; set; }
+        public string? ClassesPeriod { get; set; }
         public bool IsPresent { get; set; }
         public bool IsLate { get; set; }
         public DateTime Date { get; set; }

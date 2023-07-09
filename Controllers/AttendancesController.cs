@@ -38,7 +38,7 @@ namespace AttendanceSystemAPI.Controllers
         [HttpGet("GetUnjustifiedAbsences")]
         public async Task<ActionResult<IEnumerable<AbsenceDTO>>> GetUnjustifiedAbsences()
         {
-            if (_context.Attendance == null)
+            if (_context.Attendance == null || _context.SchoolClass == null)
             {
                 return NotFound();
             }
@@ -50,8 +50,17 @@ namespace AttendanceSystemAPI.Controllers
                 
                 thisAb.AttendanceId = attendance[i].Id;
                 thisAb.StudentId = attendance[i].StudentId;
-                thisAb.ClassName = _context.SchoolClass.Where(c => c.Id == attendance[i].ClassId).FirstOrDefault().ClassName;
-                User thisUser = _context.User.Find(attendance[i].StudentId);
+                SchoolClass? associatedClass = _context.SchoolClass.Where(c => c.Id == attendance[i].ClassId).FirstOrDefault();
+                if(associatedClass == null)
+                {
+                    return NotFound();
+                }
+                thisAb.ClassName = associatedClass.ClassName;
+                User? thisUser = _context.User.Find(attendance[i].StudentId);
+                if(thisUser == null)
+                {
+                    return NotFound();
+                }
                 thisAb.StudentName = thisUser.FirstName + " " + thisUser.LastName;
                 thisAb.Status = attendance[i].Status;
                 absences.Add(thisAb);
@@ -90,10 +99,6 @@ namespace AttendanceSystemAPI.Controllers
         [HttpGet("{id}")]
         public List<AttendanceDTO> GetAttendance(Guid id)
         {
-            if (_context.Attendance == null)
-            {
-                return null;
-            }
             List<AttendanceDTO> attList = new List<AttendanceDTO>();
 
             var attendance = _context.Attendance.Where((att) => att.StudentId == id);
@@ -107,9 +112,14 @@ namespace AttendanceSystemAPI.Controllers
                 att.IsLate = thisAtt.IsLate;
                 att.IsPresent = thisAtt.IsPresent;
                 att.Status = thisAtt.Status;
-                ClassesPeriods cp = _context.ClassesPeriods.Find(thisAtt.ClassesPeriodId);
-                SchoolPeriod sp = _context.SchoolPeriod.Find(cp.PeriodId);
-                att.ClassesPeriod = sp.Name;
+                ClassesPeriods? cp = _context.ClassesPeriods.Find(thisAtt.ClassesPeriodId);
+                if (cp != null) {
+                    SchoolPeriod? sp = _context.SchoolPeriod.Find(cp.PeriodId);
+                    if (sp != null)
+                    {
+                        att.ClassesPeriod = sp.Name;
+                    }
+                }
                 attList.Add(att);
             }
 

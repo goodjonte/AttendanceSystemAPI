@@ -34,7 +34,7 @@ namespace AttendanceSystemAPI.Controllers
 
         // GET: api/TodaysResolveds/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<TodaysResolved>> GetTodaysResolved(Guid id)
+        public ActionResult<TodaysResolved> GetTodaysResolved(Guid id)
         {
           if (_context.TodaysResolved == null)
           {
