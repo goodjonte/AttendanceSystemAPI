@@ -43,10 +43,10 @@ namespace AttendanceSystemAPI.Controllers
                 return NotFound();
             }
             List<AbsenceDTO> absences = new();
-            List<Attendance> attendance = await _context.Attendance.Where(att => att.UnjustifiedResolved == false).ToListAsync();
+            List<Attendance> attendance = await _context.Attendance.Where(att => !att.UnjustifiedResolved).ToListAsync();
             for(int i = 0; i < attendance.Count; i++)
             {
-                AbsenceDTO thisAb = new AbsenceDTO
+                AbsenceDTO thisAb = new()
                 {
                     AttendanceId = attendance[i].Id,
                     StudentId = attendance[i].StudentId
@@ -84,13 +84,12 @@ namespace AttendanceSystemAPI.Controllers
             {
                 return NotFound();
             }
-            if(attendance.UnjustifiedResolved == false)
+            if(!attendance.UnjustifiedResolved)
             {
                 attendance.UnjustifiedResolved = true;
             }
             attendance.Status = abs.Status;
             _context.Entry(attendance).State = EntityState.Modified;
-            
             await _context.SaveChangesAsync();
 
             return Ok();
@@ -128,7 +127,7 @@ namespace AttendanceSystemAPI.Controllers
 
             List<AttendanceDTO> attListSorted = new();
 
-            foreach(AttendanceDTO attToBeSorted in attList)
+            foreach (AttendanceDTO attToBeSorted in attList)
             {
                 DateTime thisDate = attToBeSorted.Date;
                 if (attListSorted.Count == 0)
@@ -153,8 +152,6 @@ namespace AttendanceSystemAPI.Controllers
                     }
                 }
             }
-
-
             return attListSorted;
         }
 
@@ -167,7 +164,6 @@ namespace AttendanceSystemAPI.Controllers
             {
                 return BadRequest();
             }
-
             _context.Entry(attendance).State = EntityState.Modified;
 
             try
@@ -193,7 +189,7 @@ namespace AttendanceSystemAPI.Controllers
             var todayResolve = _context.TodaysResolved.FirstOrDefault((tr) => tr.StudentId == attendance.StudentId);
 
             if (todayResolve != null)
-            { 
+            {
                 if (todayResolve.DateValid.Date == DateTime.Today.Date && todayResolve.DateValid.Month == DateTime.Today.Month && todayResolve.DateValid.Year == DateTime.Today.Year)
                 {
                     attendance.Status = todayResolve.Status;
