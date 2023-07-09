@@ -155,28 +155,6 @@ namespace AttendanceSystemAPI.Controllers
             return attListSorted;
         }
 
-        // PUT: api/Attendances/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutAttendance(Guid id, Attendance attendance)
-        {
-            if (id != attendance.Id)
-            {
-                return BadRequest();
-            }
-            _context.Entry(attendance).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException) when (!AttendanceExists(id))
-            {
-                return NotFound();
-            }
-            return NoContent();
-        }
-
         // POST: api/Attendances
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
@@ -220,11 +198,6 @@ namespace AttendanceSystemAPI.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool AttendanceExists(Guid id)
-        {
-            return (_context.Attendance?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

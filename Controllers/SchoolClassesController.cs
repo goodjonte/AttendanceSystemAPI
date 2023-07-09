@@ -36,16 +36,7 @@ namespace AttendanceSystemAPI.Controllers
         [HttpGet("{id}/{teachersClasses}")]
         public  IQueryable<SchoolClass> GetSchoolClass(Guid id, bool teachersClasses)
         {
-            IQueryable<SchoolClass> schoolClasses;
-            if (teachersClasses)
-            {
-                schoolClasses = _context.SchoolClass.Where(c => c.TeacherId == id);
-            }
-            else
-            {
-                schoolClasses = _context.SchoolClass.Where(c => c.Id == id);
-            }
-
+            IQueryable<SchoolClass> schoolClasses = teachersClasses ? _context.SchoolClass.Where(c => c.TeacherId == id) : _context.SchoolClass.Where(c => c.Id == id);
             return schoolClasses;
         }
 
@@ -57,9 +48,7 @@ namespace AttendanceSystemAPI.Controllers
             {
                 return BadRequest();
             }
-            
             SchoolClass? schoolClass = _context.SchoolClass.Find(id);
-            
             if (schoolClass == null)
             {
                 return NotFound();
@@ -71,40 +60,7 @@ namespace AttendanceSystemAPI.Controllers
             }
             schoolClass.TeachersName = teacher.FirstName + " " + teacher.LastName;
 
-
-
             return Ok(schoolClass);
-        }
-
-        // PUT: api/SchoolClasses/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutSchoolClass(Guid id, SchoolClass schoolClass)
-        {
-            if (id != schoolClass.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(schoolClass).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!SchoolClassExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
         }
 
         // POST: api/SchoolClasses
@@ -112,11 +68,10 @@ namespace AttendanceSystemAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<SchoolClass>> PostSchoolClass(SchoolClass schoolClass)
         {
-          if (_context.SchoolClass == null)
-          {
-              return Problem("Entity set 'AttendanceSystemAPIContext.SchoolClass'  is null.");
-          }
-            
+            if (_context.SchoolClass == null)
+            {
+                return Problem("Entity set 'AttendanceSystemAPIContext.SchoolClass'  is null.");
+            }
             _context.SchoolClass.Add(schoolClass);
             await _context.SaveChangesAsync();
 
@@ -141,11 +96,6 @@ namespace AttendanceSystemAPI.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool SchoolClassExists(Guid id)
-        {
-            return (_context.SchoolClass?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

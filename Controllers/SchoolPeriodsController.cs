@@ -42,43 +42,7 @@ namespace AttendanceSystemAPI.Controllers
           }
             var schoolPeriod = await _context.SchoolPeriod.FindAsync(id);
 
-            if (schoolPeriod == null)
-            {
-                return NotFound();
-            }
-
-            return schoolPeriod;
-        }
-
-        // PUT: api/SchoolPeriods/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutSchoolPeriod(Guid id, SchoolPeriod schoolPeriod)
-        {
-            if (id != schoolPeriod.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(schoolPeriod).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!SchoolPeriodExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return schoolPeriod == null ? (ActionResult<SchoolPeriod>)NotFound() : (ActionResult<SchoolPeriod>)schoolPeriod;
         }
 
         // POST: api/SchoolPeriods
@@ -114,11 +78,6 @@ namespace AttendanceSystemAPI.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool SchoolPeriodExists(Guid id)
-        {
-            return (_context.SchoolPeriod?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

@@ -36,54 +36,15 @@ namespace AttendanceSystemAPI.Controllers
         [HttpGet("{classId}")]
         public IQueryable<ClassesPeriods> GetClassesPeriods(Guid classId)
         {
-          
             var classesPeriods = _context.ClassesPeriods.Where(c => c.ClassId == classId);
-
-            
-
             return classesPeriods;
         }
         // GET: api/ClassesPeriods/5
         [HttpGet("ById/{id}")]
         public async Task<ActionResult<ClassesPeriods>> GetClassesPeriodsById(Guid id)
         {
-
             var classesPeriods = await _context.ClassesPeriods.FindAsync(id);
-
-
-
             return Ok(classesPeriods);
-        }
-
-        // PUT: api/ClassesPeriods/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutClassesPeriods(Guid id, ClassesPeriods classesPeriods)
-        {
-            if (id != classesPeriods.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(classesPeriods).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ClassesPeriodsExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
         }
 
         // POST: api/ClassesPeriods
@@ -119,11 +80,6 @@ namespace AttendanceSystemAPI.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool ClassesPeriodsExists(Guid id)
-        {
-            return (_context.ClassesPeriods?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

@@ -43,7 +43,7 @@ namespace AttendanceSystemAPI.Controllers
         [HttpGet("TimetableInfo")]
         public async Task<ActionResult<TimeTableDTO>> TimetableInfo()
         {
-            TimeTableDTO timeTable = new TimeTableDTO();
+            TimeTableDTO timeTable = new();
             List<SchoolWeek> schoolWeeks = await _context.SchoolWeek.ToListAsync();
             List<SchoolDay> schoolDays = await _context.SchoolDay.ToListAsync();
             int mostPeriods = 0;
@@ -54,68 +54,106 @@ namespace AttendanceSystemAPI.Controllers
                 {
                     mostPeriods = thisPeriods;
                 }
-
             }
-           
 
             timeTable.MostPeriods = mostPeriods;
 
             timeTable.SameEveryDay = schoolWeeks[0].SameEveryDay;
 
             timeTable.MondayId = schoolDays.First(d => d.day == Models.DayOfWeek.Monday).Id;
-            List<Guid> MondayGuids = JsonConvert.DeserializeObject<List<Guid>>( schoolDays.First(d => d.day == Models.DayOfWeek.Monday).DaysPeriodsJsonArrayString);
+            List<Guid>? MondayGuids = JsonConvert.DeserializeObject<List<Guid>>( schoolDays.First(d => d.day == Models.DayOfWeek.Monday).DaysPeriodsJsonArrayString);
+            if (MondayGuids == null)
+            {
+                return NotFound();
+            }
             MondayGuids.ForEach(id =>
             {
-                timeTable.MondayColumn.Add(new PeriodDTO {
-                    PeriodId = id, 
-                    PeriodName = _context.SchoolPeriod.Find(id).Name
-                });
+                SchoolPeriod? period = _context.SchoolPeriod.Find(id);
+                if(period != null)
+                {
+                    timeTable.MondayColumn.Add(new PeriodDTO
+                    {
+                        PeriodId = id,
+                        PeriodName = period.Name
+                    });
+                }
             });
 
             timeTable.TuesdayId = schoolDays.First(d => d.day == Models.DayOfWeek.Tuesday).Id;
-            List<Guid> TuesdayGuids = JsonConvert.DeserializeObject<List<Guid>>(schoolDays.First(d => d.day == Models.DayOfWeek.Tuesday).DaysPeriodsJsonArrayString);
+            List<Guid>? TuesdayGuids = JsonConvert.DeserializeObject<List<Guid>>(schoolDays.First(d => d.day == Models.DayOfWeek.Tuesday).DaysPeriodsJsonArrayString);
+            if(TuesdayGuids == null)
+            {
+                return NotFound();
+            }
             TuesdayGuids.ForEach(id =>
             {
-                timeTable.TuesdayColumn.Add(new PeriodDTO
+                SchoolPeriod? period = _context.SchoolPeriod.Find(id);
+                if (period != null)
                 {
-                    PeriodId = id,
-                    PeriodName = _context.SchoolPeriod.Find(id).Name
-                });
+                    timeTable.TuesdayColumn.Add(new PeriodDTO
+                    {
+                        PeriodId = id,
+                        PeriodName = period.Name
+                    });
+                }
             });
 
             timeTable.WednesdayId = schoolDays.First(d => d.day == Models.DayOfWeek.Wednesday).Id;
-            List<Guid> WednesdayGuids = JsonConvert.DeserializeObject<List<Guid>>(schoolDays.First(d => d.day == Models.DayOfWeek.Wednesday).DaysPeriodsJsonArrayString);
+            List<Guid>? WednesdayGuids = JsonConvert.DeserializeObject<List<Guid>>(schoolDays.First(d => d.day == Models.DayOfWeek.Wednesday).DaysPeriodsJsonArrayString);
+            if(WednesdayGuids == null)
+            {
+                return NotFound();
+            }
             WednesdayGuids.ForEach(id =>
             {
-                timeTable.WednesdayColumn.Add(new PeriodDTO
+                SchoolPeriod? period = _context.SchoolPeriod.Find(id);
+                if(period != null)
                 {
-                    PeriodId = id,
-                    PeriodName = _context.SchoolPeriod.Find(id).Name
-                });
+                    timeTable.WednesdayColumn.Add(new PeriodDTO
+                    {
+                        PeriodId = id,
+                        PeriodName = period.Name
+                    });
+                }
             });
 
             timeTable.ThursdayId = schoolDays.First(d => d.day == Models.DayOfWeek.Thursday).Id;
-            List<Guid> ThursdayGuids = JsonConvert.DeserializeObject<List<Guid>>(schoolDays.First(d => d.day == Models.DayOfWeek.Thursday).DaysPeriodsJsonArrayString);
+            List<Guid>? ThursdayGuids = JsonConvert.DeserializeObject<List<Guid>>(schoolDays.First(d => d.day == Models.DayOfWeek.Thursday).DaysPeriodsJsonArrayString);
+            if(ThursdayGuids == null)
+            {
+                return NotFound();
+            }
             ThursdayGuids.ForEach(id =>
             {
-                timeTable.ThursdayColumn.Add(new PeriodDTO
+                SchoolPeriod? period = _context.SchoolPeriod.Find(id);
+                if (period != null)
                 {
-                    PeriodId = id,
-                    PeriodName = _context.SchoolPeriod.Find(id).Name
-                });
+                    timeTable.ThursdayColumn.Add(new PeriodDTO
+                    {
+                        PeriodId = id,
+                        PeriodName = period.Name
+                    });
+                }
             });
 
             timeTable.FridayId = schoolDays.First(d => d.day == Models.DayOfWeek.Friday).Id;
-            List<Guid> FridayGuids = JsonConvert.DeserializeObject<List<Guid>>(schoolDays.First(d => d.day == Models.DayOfWeek.Friday).DaysPeriodsJsonArrayString);
+            List<Guid>? FridayGuids = JsonConvert.DeserializeObject<List<Guid>>(schoolDays.First(d => d.day == Models.DayOfWeek.Friday).DaysPeriodsJsonArrayString);
+            if(FridayGuids == null)
+            {
+                return NotFound();
+            }
             FridayGuids.ForEach(id =>
             {
-                timeTable.FridayColumn.Add(new PeriodDTO
+                SchoolPeriod? period = _context.SchoolPeriod.Find(id);
+                if (period != null)
                 {
-                    PeriodId = id,
-                    PeriodName = _context.SchoolPeriod.Find(id).Name
-                });
+                    timeTable.FridayColumn.Add(new PeriodDTO
+                    {
+                        PeriodId = id,
+                        PeriodName = period.Name
+                    });
+                }
             });
-
 
             return timeTable;
         }
@@ -130,43 +168,7 @@ namespace AttendanceSystemAPI.Controllers
           }
             var schoolWeek = await _context.SchoolWeek.FindAsync(id);
 
-            if (schoolWeek == null)
-            {
-                return NotFound();
-            }
-
-            return schoolWeek;
-        }
-
-        // PUT: api/SchoolWeeks/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutSchoolWeek(Guid id, SchoolWeek schoolWeek)
-        {
-            if (id != schoolWeek.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(schoolWeek).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!SchoolWeekExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return schoolWeek == null ? (ActionResult<SchoolWeek>)NotFound() : (ActionResult<SchoolWeek>)schoolWeek;
         }
 
         // POST: api/SchoolWeeks
@@ -202,11 +204,6 @@ namespace AttendanceSystemAPI.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool SchoolWeekExists(Guid id)
-        {
-            return (_context.SchoolWeek?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

@@ -36,7 +36,6 @@ namespace AttendanceSystemAPI.Controllers
         [HttpGet("{id}")]
         public IQueryable<Enrollments> GetEnrollments(Guid id)
         {
-
             IQueryable<Enrollments> enrollments = _context.Enrollments.Where(c => c.ClassId == id);
 
             foreach(Enrollments enrollment in enrollments)
@@ -46,37 +45,6 @@ namespace AttendanceSystemAPI.Controllers
             }
 
             return enrollments;
-        }
-
-        // PUT: api/Enrollments/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutEnrollments(Guid id, Enrollments enrollments)
-        {
-            if (id != enrollments.EnrollmentId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(enrollments).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!EnrollmentsExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
         }
 
         // POST: api/Enrollments
@@ -112,11 +80,6 @@ namespace AttendanceSystemAPI.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool EnrollmentsExists(Guid id)
-        {
-            return (_context.Enrollments?.Any(e => e.EnrollmentId == id)).GetValueOrDefault();
         }
     }
 }

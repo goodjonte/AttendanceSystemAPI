@@ -17,56 +17,49 @@ namespace AttendanceSystemAPI.Controllers
     public class UserController : ControllerBase
     {
         //FIELDS and PROPERTIES
-        public static User user = new User();
         public readonly IConfiguration _configuration;
-        public AttendanceSystemAPIContext _context { get; set; }
+        public AttendanceSystemAPIContext Context { get; set; }
 
         //CONSTRUCTOR
         public UserController(IConfiguration configuration, AttendanceSystemAPIContext context)
         {
             _configuration = configuration;
-            _context = context;
+            Context = context;
         }
 
         //METHODS
         //api/User/{id}
         [HttpGet("GetUser")]
-        public async Task<User> GetUserById(Guid id)
+        public User GetUserById(Guid id)
         {
-            User thisUser = _context.User.First(x => x.Id == id);
-            
+            User thisUser = Context.User.First(x => x.Id == id);
             return thisUser;
-
         }
 
         //api/User/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<String>> GetNameById(Guid id)
+        public ActionResult<String> GetNameById(Guid id)
         {
-            User thisUser = _context.User.First(x => x.Id == id);
+            User thisUser = Context.User.First(x => x.Id == id);
             if(thisUser == null)
             {
                 return "User Not Found";
             }
             return thisUser.FirstName + " " + thisUser.LastName;
-
         }
 
         //api/User/GetTeachers
         [HttpGet("GetTeachers")]
         public async Task<List<User>> GetTeachers()
         {
-
-            return await _context.User.Where(u => u.UsersRole == UserRole.Teacher).ToListAsync();
-
+            return await Context.User.Where(u => u.UsersRole == UserRole.Teacher).ToListAsync();
         }
+
         //api/User/GetStudents
         [HttpGet("GetStudents")]
         public async Task<List<User>> GetStudents()
         {
-
-            return await _context.User.Where(u => u.UsersRole == UserRole.Student).ToListAsync();
-
+            return await Context.User.Where(u => u.UsersRole == UserRole.Student).ToListAsync();
         }
 
         //api/User/register POST
@@ -74,12 +67,9 @@ namespace AttendanceSystemAPI.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register(UserCreationDTO request)
         {
+            User user = new();
             if (request.UsersRole != UserRole.Student) //set user properties based on user role
             {
-                if (request.Email == "" || request.Password == "" || request.Email == null || request.Password == null)//Checks if the username or password is null
-                {
-                    return BadRequest("Please enter both a Email and Password when creating a Teacer Account");
-                }
                 CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);//Takes in the password and creates the hash and salt
 
                 user.Id = Guid.NewGuid();
@@ -87,7 +77,7 @@ namespace AttendanceSystemAPI.Controllers
                 user.Email = request.Email;
                 user.PasswordHash = passwordHash;
                 user.PasswordSalt = passwordSalt;
-                if (_context.User.Any(x => x.Email == user.Email))//Checks if the username is already taken
+                if (Context.User.Any(x => x.Email == user.Email))//Checks if the username is already taken
                 {
                     return BadRequest("Email already signed up!");
                 }
@@ -103,11 +93,10 @@ namespace AttendanceSystemAPI.Controllers
             user.FirstName = request.FirstName;
             user.LastName = request.LastName;
             user.UsersRole = request.UsersRole;
-            _context.User.Add(user);//Adds the user to the db context
-            await _context.SaveChangesAsync();//Saves the changes to the db
+            Context.User.Add(user);//Adds the user to the db context
+            await Context.SaveChangesAsync();//Saves the changes to the db
 
             return Ok(user);
-
         }
 
         //api/User/login POST
@@ -115,18 +104,21 @@ namespace AttendanceSystemAPI.Controllers
         [HttpPost("login")]
         public ActionResult<string> Login(UserLoginDTO loginRequest)
         {
-            bool UserExists = _context.User.Any(x => x.Email == loginRequest.Email);
-            if (UserExists == false)//Checks if username is valid
+            bool UserExists = Context.User.Any(x => x.Email == loginRequest.Email);
+            if (!UserExists)//Checks if username is valid
             {
                 return BadRequest("User not found!");
             }
 
-            var userLoggingIn = _context.User.FirstOrDefault(x => x.Email == loginRequest.Email);//Gets the user from the db
+            var userLoggingIn = Context.User.FirstOrDefault(x => x.Email == loginRequest.Email);//Gets the user from the db
             if (userLoggingIn != null)
             {
-                if (!VerifyPasswordHash(loginRequest.Password, userLoggingIn.PasswordHash, userLoggingIn.PasswordSalt))//checks if password is valid(hash and salt would come from db in real project(the users row))
+                if (userLoggingIn.PasswordHash != null && userLoggingIn.PasswordSalt != null)
                 {
-                    return BadRequest("Wrong Password");
+                    if (!VerifyPasswordHash(loginRequest.Password, userLoggingIn.PasswordHash, userLoggingIn.PasswordSalt))//checks if password is valid(hash and salt would come from db in real project(the users row))
+                    {
+                        return BadRequest("Wrong Password");
+                    }
                 }
             }
             string token = CreateToken(loginRequest);
@@ -137,27 +129,20 @@ namespace AttendanceSystemAPI.Controllers
         //Creates the JWT token Based off the user
         private string CreateToken(UserLoginDTO tokenRequest)
         {
-            UserRole userRole;
-            string userRoleString;
-            User user = _context.User.FirstOrDefault(x => x.Email == tokenRequest.Email);
-            switch (user.UsersRole)
+            User? user = Context.User.FirstOrDefault(x => x.Email == tokenRequest.Email);
+            if(user == null)
             {
-                case UserRole.Admin:
-                    userRoleString = "0";
-                    break;
-                case UserRole.Teacher:
-                    userRoleString = "1";
-                    break;
-                default:
-                    userRoleString = "2";
-                    break;
+                return "User not found";
             }
 
-
-
-
-
-            List<Claim> claims = new List<Claim>//Creates claims to assign to the jwt token 
+            string userRoleString = user.UsersRole switch
+            {
+                UserRole.Admin => "0",
+                UserRole.Teacher => "1",
+                UserRole.Student => "2",
+                _ => "3",
+            };
+            List<Claim> claims = new()
             {
                 new Claim("user", user.Id.ToString()),
                 new Claim("name", user.FirstName + " " + user.LastName),
@@ -173,9 +158,9 @@ namespace AttendanceSystemAPI.Controllers
                 var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature); //creats the creds (pretty much just signature to the key)
 
                 var token = new JwtSecurityToken( //Initialisez the JWT token (putting everything together)
-                    claims: claims,
                     issuer: "AttendanceSystem",
                     audience: "AttendanceSystem",
+                    claims: claims,
                     expires: DateTime.Now.AddDays(1),//Here is the token expiry (Currently just adding 24hours from creation)
                     signingCredentials: cred
                     );
@@ -185,29 +170,23 @@ namespace AttendanceSystemAPI.Controllers
                 return jwt;
             }
             return "No KeyToken in Appsettings";
-
         }
 
-
         //creates password hash and salt sets the out params to the created hash and salt (would need to return in actual example and add to db context)
-        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
-            using (var hmac = new HMACSHA512())
-            {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            }
+            using var hmac = new HMACSHA512();
+            passwordSalt = hmac.Key;
+            passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
         }
 
         //Creates a Hash from the entered password then compares it to the existing hash (Would be from db in real example)
-        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+        private static bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
-            using (var hmac = new HMACSHA512(passwordSalt))
-            {
-                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            using var hmac = new HMACSHA512(passwordSalt);
+            var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
 
-                return computedHash.SequenceEqual(passwordHash);
-            }
+            return computedHash.SequenceEqual(passwordHash);
         }
     }
 }

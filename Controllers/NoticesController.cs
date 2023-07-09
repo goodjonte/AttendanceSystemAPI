@@ -42,43 +42,7 @@ namespace AttendanceSystemAPI.Controllers
           }
             var notice = await _context.Notice.FindAsync(id);
 
-            if (notice == null)
-            {
-                return NotFound();
-            }
-
-            return notice;
-        }
-
-        // PUT: api/Notices/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutNotice(Guid id, Notice notice)
-        {
-            if (id != notice.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(notice).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!NoticeExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return notice == null ? (ActionResult<Notice>)NotFound() : (ActionResult<Notice>)notice;
         }
 
         // POST: api/Notices
@@ -115,11 +79,6 @@ namespace AttendanceSystemAPI.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool NoticeExists(Guid id)
-        {
-            return (_context.Notice?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

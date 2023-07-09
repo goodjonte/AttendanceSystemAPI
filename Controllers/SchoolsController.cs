@@ -36,49 +36,13 @@ namespace AttendanceSystemAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<School>> GetSchool(Guid id)
         {
-          if (_context.School == null)
-          {
-              return NotFound();
-          }
-            var school = await _context.School.FindAsync(id);
-
-            if (school == null)
+            if (_context.School == null)
             {
                 return NotFound();
             }
+            var school = await _context.School.FindAsync(id);
 
-            return school;
-        }
-
-        // PUT: api/Schools/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutSchool(Guid id, School school)
-        {
-            if (id != school.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(school).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!SchoolExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return school == null ? (ActionResult<School>)NotFound() : (ActionResult<School>)school;
         }
 
         // POST: api/Schools
@@ -114,11 +78,6 @@ namespace AttendanceSystemAPI.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool SchoolExists(Guid id)
-        {
-            return (_context.School?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

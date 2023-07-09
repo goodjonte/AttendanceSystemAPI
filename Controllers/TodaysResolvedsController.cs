@@ -55,37 +55,6 @@ namespace AttendanceSystemAPI.Controllers
             }
         }
 
-        // PUT: api/TodaysResolveds/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTodaysResolved(Guid id, TodaysResolved todaysResolved)
-        {
-            if (id != todaysResolved.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(todaysResolved).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TodaysResolvedExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
         // POST: api/TodaysResolveds
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
@@ -119,11 +88,6 @@ namespace AttendanceSystemAPI.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool TodaysResolvedExists(Guid id)
-        {
-            return (_context.TodaysResolved?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
