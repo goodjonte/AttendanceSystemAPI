@@ -42,14 +42,15 @@ namespace AttendanceSystemAPI.Controllers
             {
                 return NotFound();
             }
-            List<AbsenceDTO> absences = new List<AbsenceDTO>();
+            List<AbsenceDTO> absences = new();
             List<Attendance> attendance = await _context.Attendance.Where(att => att.UnjustifiedResolved == false).ToListAsync();
-            for(int i = 0; i < attendance.Count(); i++)
+            for(int i = 0; i < attendance.Count; i++)
             {
-                AbsenceDTO thisAb = new AbsenceDTO();
-                
-                thisAb.AttendanceId = attendance[i].Id;
-                thisAb.StudentId = attendance[i].StudentId;
+                AbsenceDTO thisAb = new AbsenceDTO
+                {
+                    AttendanceId = attendance[i].Id,
+                    StudentId = attendance[i].StudentId
+                };
                 SchoolClass? associatedClass = _context.SchoolClass.Where(c => c.Id == attendance[i].ClassId).FirstOrDefault();
                 if(associatedClass == null)
                 {
@@ -99,19 +100,21 @@ namespace AttendanceSystemAPI.Controllers
         [HttpGet("{id}")]
         public List<AttendanceDTO> GetAttendance(Guid id)
         {
-            List<AttendanceDTO> attList = new List<AttendanceDTO>();
+            List<AttendanceDTO> attList = new();
 
             var attendance = _context.Attendance.Where((att) => att.StudentId == id);
 
             foreach(Attendance thisAtt in attendance)
             {
-                AttendanceDTO att = new AttendanceDTO();
-                att.Id = thisAtt.Id;
-                att.ClassId = thisAtt.ClassId;
-                att.Date = thisAtt.Date;
-                att.IsLate = thisAtt.IsLate;
-                att.IsPresent = thisAtt.IsPresent;
-                att.Status = thisAtt.Status;
+                AttendanceDTO att = new()
+                {
+                    Id = thisAtt.Id,
+                    ClassId = thisAtt.ClassId,
+                    Date = thisAtt.Date,
+                    IsLate = thisAtt.IsLate,
+                    IsPresent = thisAtt.IsPresent,
+                    Status = thisAtt.Status
+                };
                 ClassesPeriods? cp = _context.ClassesPeriods.Find(thisAtt.ClassesPeriodId);
                 if (cp != null) {
                     SchoolPeriod? sp = _context.SchoolPeriod.Find(cp.PeriodId);
@@ -123,19 +126,19 @@ namespace AttendanceSystemAPI.Controllers
                 attList.Add(att);
             }
 
-            List<AttendanceDTO> attListSorted = new List<AttendanceDTO>();
+            List<AttendanceDTO> attListSorted = new();
 
             foreach(AttendanceDTO attToBeSorted in attList)
             {
                 DateTime thisDate = attToBeSorted.Date;
-                if (attListSorted.Count() == 0)
+                if (attListSorted.Count == 0)
                 {
                     attListSorted.Add(attToBeSorted);
                 }
                 else
                 {
                     bool added = false;
-                    for (int i = 0; i < attListSorted.Count(); i++)
+                    for (int i = 0; i < attListSorted.Count; i++)
                     {
                         if (thisDate < attListSorted[i].Date)
                         {
@@ -171,18 +174,10 @@ namespace AttendanceSystemAPI.Controllers
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException) when (!AttendanceExists(id))
             {
-                if (!AttendanceExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound();
             }
-
             return NoContent();
         }
 
